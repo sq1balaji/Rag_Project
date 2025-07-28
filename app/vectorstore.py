@@ -9,15 +9,12 @@ client = QdrantClient(url=Config.QDRANT_HOST)
 
 def create_collection():
     if not client.collection_exists(Config.COLLECTION_NAME):
-        print("Creating collection...")
         client.recreate_collection(
             collection_name=Config.COLLECTION_NAME,
             vectors_config=VectorParams(size=768, distance=Distance.COSINE)
         )
-        print(f"Created Collection.")
 
 def insert_documents(docs):
-    print("Loading the vectors into the vector db...")
     vectors = [doc["embedding"] for doc in docs]
     ids = [doc["id"] for doc in docs]
 
@@ -40,4 +37,3 @@ def insert_documents(docs):
             for i in range(len(docs))
         ]
     )
-    print("Loaded sucessfully.")

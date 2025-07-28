@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-engine = create_engine(Config.POSTGRES_URI)
+engine = create_engine(Config.DATABASE_URL)
 
 def fetch_cve_documents(limit=300):
     print("Connecting with the postgres db...")

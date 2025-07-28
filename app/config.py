@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    POSTGRES_URI = os.getenv("POSTGRES_URI")
+    DATABASE_URL = os.getenv("DATABASE_URL")
     QDRANT_HOST = os.getenv("QDRANT_HOST")
-    OLLAMA_URL = os.getenv("OLLAMA_URL")
+    QDRANT_URL = os.getenv("QDRANT_URL")
+    OLLAMA_API = os.getenv("OLLAMA_API")
     COLLECTION_NAME = os.getenv("COLLECTION_NAME", "rag_data")

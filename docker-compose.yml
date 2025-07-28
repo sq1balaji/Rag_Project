@@ -1,64 +1,56 @@
-version: '3.8'
+version: "3.9"
 
 services:
   postgres:
     image: postgres:15
+    container_name: postgres
     environment:
-      POSTGRES_DB: task-1
-      POSTGRES_USER: balaji
-      POSTGRES_PASSWORD: Balaji%40sq1
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "balaji", "-d", "task-1"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
+      - pgdata:/var/lib/postgresql/data
 
   qdrant:
-    image: qdrant/qdrant:v1.2.0
+    image: qdrant/qdrant:latest
+    container_name: qdrant
     ports:
       - "6333:6333"
     volumes:
-      - qdrant_data:/qdrant/storage
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:6333 || exit 1"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
+      - qdrantdata:/qdrant/storage
 
   ollama:
-    image: ollama/ollama
+    build:
+      context: .
+      dockerfile: Dockerfile.ollama
+    container_name: llama2
     ports:
-      - "11434:11434"
+      - "11435:11434"
     volumes:
       - ollama_data:/root/.ollama
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:11434 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    restart: unless-stopped
 
   streamlit:
-    build: .
-    depends_on:
-      postgres:
-        condition: service_healthy
-      qdrant:
-        condition: service_healthy
-      ollama:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: "postgresql://balaji:Balaji%40sq1@postgres:5432/task-1"
-      QDRANT_URL: "http://qdrant:6333"
-      OLLAMA_API: "http://ollama:11434"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: streamlit
     ports:
       - "8501:8501"
-    command: streamlit run app.py
+    depends_on:
+      - postgres
+      - qdrant
+      - ollama
+    volumes:
+      - .:/app
+    working_dir: /app
+    env_file:
+      - .env   # loads env vars like DATABASE_URL, QDRANT_URL, OLLAMA_API
+    entrypoint: ["/entrypoint.sh"]
 
 volumes:
-  postgres_data:
-  qdrant_data:
+  pgdata:
+  qdrantdata:
   ollama_data:

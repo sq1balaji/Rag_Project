@@ -1,0 +1,6 @@
+env/
+.env
+*__pycache__/
+__init__.py
+mlflow/
+mlruns/

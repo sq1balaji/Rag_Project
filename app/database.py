@@ -6,7 +6,7 @@ load_dotenv()
 
 engine = create_engine(Config.DATABASE_URL)
 
-def fetch_cve_documents(limit=300):
+def fetch_cve_documents(limit=1000):
     print("Connecting with the postgres db...")
     with engine.connect() as conn:
         print("Connected with thw postgres db.")

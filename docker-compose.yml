@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -47,7 +47,15 @@ services:
       - .:/app
     working_dir: /app
     env_file:
-      - .env   # loads env vars like DATABASE_URL, QDRANT_URL, OLLAMA_API
+      - .env
+    environment:
+      # Add PYTHONPATH so imports work inside container
+      PYTHONPATH: /app
+      # Streamlit config environment variables
+      STREAMLIT_SERVER_HEADLESS: "true"
+      STREAMLIT_SERVER_ENABLECORS: "false"
+      STREAMLIT_SERVER_ADDRESS: "0.0.0.0"
+      STREAMLIT_SERVER_PORT: "8501"
     entrypoint: ["/entrypoint.sh"]
 
 volumes:

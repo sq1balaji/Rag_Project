@@ -1,8 +1,14 @@
 FROM ollama/ollama:latest
 
+# Just confirm Ollama is installed
+RUN which ollama && ollama --version
+
+# Optional: install curl if your entrypoint needs it
 RUN apt-get update && apt-get install -y curl
 
+# Add your entrypoint script
 COPY ollama-entrypoint.sh /ollama-entrypoint.sh
 RUN chmod +x /ollama-entrypoint.sh
 
+# Set Ollama's default entrypoint
 ENTRYPOINT ["/ollama-entrypoint.sh"]

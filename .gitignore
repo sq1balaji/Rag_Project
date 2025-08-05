@@ -4,3 +4,4 @@ env/
 __init__.py
 mlflow/
 mlruns/
+venv/

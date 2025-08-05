@@ -15,6 +15,10 @@ def create_collection():
         )
 
 def insert_documents(docs):
+    if not docs:
+        print("No document insert into the Qdrant...")
+        return
+    
     vectors = [doc["embedding"] for doc in docs]
     ids = [doc["id"] for doc in docs]
 
@@ -29,6 +33,9 @@ def insert_documents(docs):
         }
         for doc in docs
     ]
+
+    print(f"Inserting {len(docs)} documents into Qdrant")
+
 
     client.upsert(
         collection_name=Config.COLLECTION_NAME,

@@ -1,6 +1,8 @@
 import os
 import streamlit as st
-from app.rag_pipeline import run_rag_pipeline
+# from app.rag_pipeline import run_rag_pipeline
+from app.llm import respond_with_relevancy_check
+from app.rag_pipeline import retrieve_similar_docs
 from evaluation.evaluate import log_evaluation
 from app.vectorstore import create_collection
 from qdrant_client import QdrantClient
@@ -23,12 +25,13 @@ if st.button("Submit"):
         st.warning("Please enter a valid query.")
     else:
         try:
-            answer, context = run_rag_pipeline(query)
+            answer = respond_with_relevancy_check(query)
+            # context = retrieve_similar_docs(query)
             st.markdown("**Answer:**")
             st.markdown(answer)
 
             # ✅ Log to MLflow
-            log_evaluation(query, answer, context)
+            # log_evaluation(query, answer, context)
 
         except Exception as e:
             st.error(f"❌ Error: {e}")

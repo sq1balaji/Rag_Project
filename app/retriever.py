@@ -26,4 +26,6 @@ def retrieve_similar_docs(cve_id):
     if not results:
         return None
     
-    return results[0].payload
+    # payload = results[0].payload
+    # print("Retrieved payload:", payload)
+    return [res.payload for res in results]
